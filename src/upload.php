@@ -32,7 +32,7 @@ function upload($file)
         $file_path = './upload/';
         $file_name = intval(time()) . "_" . $file['name'];
         move_uploaded_file($file['tmp_name'], $file_path . $file_name);
-        return array("url" => (empty($_SERVER['HTTP_X_CLIENT_PROTO']) ? 'http:' : $_SERVER['HTTP_X_CLIENT_PROTO'] . ':') . '//' . $_SERVER['HTTP_HOST'] . '/upload/' . $file_name);
+        return array("url" => (empty($_SERVER['HTTP_X_CLIENT_PROTO']) ? 'http:' : $_SERVER['HTTP_X_CLIENT_PROTO'] . ':') . '//' . $_SERVER['HTTP_HOST'] . '/upload/' . $file_name, "name" => $file['name'], "size" => $file['size'], "type" => $file['type']);
     }
     return null;
 }
