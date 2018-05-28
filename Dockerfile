@@ -4,8 +4,6 @@ MAINTAINER Say.li <120011676@qq.com>
 
 LABEL maintainer="Say.li <120011676@qq.com>"
 
-USER root
-
 ENV TZ Asia/Shanghai
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
