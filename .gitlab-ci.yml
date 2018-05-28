@@ -1,0 +1,38 @@
+stages:
+  - package
+  - deploy
+  - latest
+docker-build-and-push-test:
+  stage: package
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - echo -e "https://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/main/\nhttps://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/community/" > /etc/apk/repositories
+    - apk update && apk add make
+    - docker login ${DOCKER_HOSTNAME} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+  script:
+    - ${JOB_LATEST:-make push-test}
+deploy-docker-image-test:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - echo -e "https://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/main/\nhttps://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/community/" > /etc/apk/repositories
+    - apk update && apk add make openssh
+  only:
+    - master
+  script:
+    - ${JOB_LATEST:-make deploy SSH_HOSTNAME=${DEPLOY_HOSTNAME:=111.9.116.136}}
+docker-build-and-push-latest:
+  stage: latest
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - echo -e "https://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/main/\nhttps://mirrors.aliyun.com/alpine/v`sed -n 1p /etc/issue | cut -d " " -f5`/community/" > /etc/apk/repositories
+    - apk update && apk add make
+    - docker login ${DOCKER_HOSTNAME} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+  only:
+    - master
+  script:
+    - ${JOB_LATEST:+make push-latest push-version VERSION=${VERSION}}
