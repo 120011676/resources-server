@@ -27,6 +27,6 @@ run: image-dev
 	docker-compose up --build
 deploy:
 	chmod 600 ${SSH_KEY}
-	ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no -p ${SSH_PORT} ${SSH_USERNAME}@${SSH_HOSTNAME} "cd ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME} && (docker-compose stop; docker-compose rm -f; docker rmi ${DOCKER_IMAGE_NAME}:test; cd ${AUTO_DEPLOY_DIRECTORY}; rm -rf ${PROJECT_NAME}/docker-compose.yml;) || mkdir ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME}"
+	ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no -p ${SSH_PORT} ${SSH_USERNAME}@${SSH_HOSTNAME} "cd ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME} && (docker-compose stop; docker-compose rm -f; docker rmi ${DOCKER_IMAGE_NAME}:test; cd ${AUTO_DEPLOY_DIRECTORY}; rm -rf ${PROJECT_NAME}/docker-compose.yml;) || mkdir ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME} && mkdir ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME}/upload && chmod 777 ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME}/upload"
 	scp -P ${SSH_PORT} -i ${SSH_KEY} -r docker-compose.test.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME}/
 	ssh -i ${SSH_KEY} -p ${SSH_PORT} ${SSH_USERNAME}@${SSH_HOSTNAME} "cd ${AUTO_DEPLOY_DIRECTORY}/${PROJECT_NAME} && mv docker-compose.test.yml docker-compose.yml && docker-compose up -d"
