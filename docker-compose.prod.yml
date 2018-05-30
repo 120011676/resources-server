@@ -1,7 +1,7 @@
 version: '3'
 services:
   resources:
-    image: registry.changhong.io/hlj/rcg-resources-server
+    image: 120011676/resources-server
     restart: always
     volumes:
       - './upload/:/var/www/html/upload'
